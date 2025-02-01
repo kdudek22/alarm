@@ -22,7 +22,6 @@ class AlarmPlayer:
         return cls.instance
 
     def play(self):
-        print(self)
         if self.is_playing:
             logger.log("Tried to play, but is already playing")
             return
@@ -40,11 +39,13 @@ class AlarmPlayer:
         while self.should_play:
             time.sleep(1)
 
+        pygame.mixer.music.stop()
         logger.debug("Alarm player stopped")
         self.is_playing = False
 
     def stop(self):
-        self.is_playing = False
+        logger.debug("Stopping player")
+        self.should_play = False
 
 app = flask.Flask(__name__)
 
@@ -70,6 +71,7 @@ def check_for_events():
         player.play()
 
         while PLAY_SOUND:
+            logger.debug("Checking if should play, next check in 1 second")
             time.sleep(1)
 
         player.stop()
